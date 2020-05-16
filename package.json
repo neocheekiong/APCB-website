@@ -1,0 +1,22 @@
+{
+  "name": "apcb-website",
+  "version": "1.0.0",
+  "description": "APCB website reimagined",
+  "main": "app.js",
+  "scripts": {
+    "test": "start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neocheekiong/APCB-website.git"
+  },
+  "author": "Neo Chee Kiong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neocheekiong/APCB-website/issues"
+  },
+  "homepage": "https://github.com/neocheekiong/APCB-website#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
