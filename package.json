@@ -18,6 +18,9 @@
   "homepage": "https://github.com/neocheekiong/APCB-website#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "method-override": "^3.0.0",
+    "mongodb": "^3.5.9"
   }
 }

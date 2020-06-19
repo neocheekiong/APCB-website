@@ -1,12 +1,11 @@
-const controllers = require('..controllers/');
-/**
- * Page Views
- */
-const INDEX_PAGE = 'index.ejs';
-const REGISTRATION_PAGE = 'registration.ejs';
-    
+const controllers = require('../controllers/index');
+const views = require('../views');
+
 module.exports = (app) => {
-    
-    app.get('/', controllers.renderPage(INDEX_PAGE));
-    app.get('/register', controllers.renderPage(REGISTRATION_PAGE));
+    app.get('/', controllers.renderPage(views.INDEX_PAGE)());
+    app.use((request, response, next) => {
+        if(request.session) {}
+    });
+    app.get('/register', controllers.renderPage(views.REGISTRATION_PAGE)());
+    app.post('/register', controllers.processRegistration);
 };
