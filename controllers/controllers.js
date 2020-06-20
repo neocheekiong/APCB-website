@@ -2,6 +2,7 @@ const views = require('../views');
 const repositories = require('../repositories');
 const bcrypt = require('bcrypt');
 const { ObjectID } = require('mongodb');
+const validators = require('../validators');
 
 const SALT_ROUNDS = 10;
 module.exports = {
