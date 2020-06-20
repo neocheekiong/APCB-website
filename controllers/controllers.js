@@ -1,6 +1,7 @@
 const views = require('../views');
 const repositories = require('../repositories');
 const bcrypt = require('bcrypt');
+const { ObjectID } = require('mongodb');
 
 const SALT_ROUNDS = 10;
 module.exports = {
@@ -8,19 +9,34 @@ module.exports = {
      * Renders specified page
      */
     renderPage: page => (data = {}) => {
-        console.log('Trying to render Page');
         return (request, response) => {
             response.render(page, data);
         };
     },
 
     async processRegistration (request, response) {
+        console.log('Processing Registration');
         const data = request.body;
         try {
-            data.password = await bcrypt.hash(data.password, bcrypt.genSalt(SALT_ROUNDS, err => err.message));
-            repositories.user.insertUser(data);
+            data.password = bcrypt.hashSync(data.password, SALT_ROUNDS);
+            let result = await repositories.user.insertUser({
+                email: data.email,
+                password: data.password
+            });
+            console.log(result);
+            const newUserID = result.insertedId;
+            console.log(newUserID);
+            const user = await repositories.user.find({
+                _id: new ObjectID(newUserID)
+            });
+            console.log(user);
+            request.session.currentUser = user;
+            response.redirect('/');
         } catch (error) {
-            response.render(views.ERROR_PAGE, { message: error.message });
+            console.log(error);
+            response.render(views.ERROR_PAGE, {
+                message: error.message
+            });
         }
     }
 };

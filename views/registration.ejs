@@ -8,12 +8,15 @@
 
 <body>
     <%- include('./partials/header') %>
-    <h1>Asia Pacific Certification Board</h1>
-    <form action="" method="post">
-        <input type="text" name="email" id="email" placeholder="Your email address">
-        <input type="password" name="password" id="password"
-            placeholder="Your password, minimum of 10 alphanumeric characters">
-    </form>
+    <div class="container">
+        <h1>Asia Pacific Certification Board</h1>
+        <form action="/register" method="post">
+            <input type="text" name="email" id="email" placeholder="Your email address">
+            <input type="password" name="password" id="password"
+                placeholder="Your password, minimum of 10 alphanumeric characters">
+            <input type="submit" value="Register Now">
+        </form>
+    </div>
     <%- include('./partials/footer') %>
 </body>
 
