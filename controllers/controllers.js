@@ -24,13 +24,10 @@ module.exports = {
                 email: data.email,
                 password: data.password
             });
-            console.log(result);
             const newUserID = result.insertedId;
-            console.log(newUserID);
             const user = await repositories.user.find({
                 _id: new ObjectID(newUserID)
             });
-            console.log(user);
             request.session.currentUser = user;
             response.redirect('/');
         } catch (error) {
@@ -39,5 +36,11 @@ module.exports = {
                 message: error.message
             });
         }
+    },
+
+    validateString (request, response) {
+        const type = request.params.type;
+        const data = request.body[type];
+        return validators.user.isStringValid(data)(type);
     }
 };

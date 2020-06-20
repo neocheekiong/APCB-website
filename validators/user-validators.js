@@ -4,11 +4,6 @@ const validationRegExp = {
 };
 
 module.exports = {
-    /**
-     * 
-     * @param {String} string 
-     */
-
     isStringValid: (string) => (type) => {
         return validationRegExp[type].test(string);
     },
