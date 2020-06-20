@@ -41,6 +41,6 @@ module.exports = {
     validateString (request, response) {
         const type = request.params.type;
         const data = request.body[type];
-        return validators.user.isStringValid(data)(type);
+        return validators.user.regExpValidation(data)(type);
     }
 };

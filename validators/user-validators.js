@@ -4,7 +4,7 @@ const validationRegExp = {
 };
 
 module.exports = {
-    isStringValid: (string) => (type) => {
+    regExpValidation: (string) => (type) => {
         return validationRegExp[type].test(string);
     },
 };
