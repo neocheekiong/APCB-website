@@ -22,7 +22,8 @@ module.exports = {
             data.password = bcrypt.hashSync(data.password, SALT_ROUNDS);
             let result = await repositories.user.insertUser({
                 email: data.email,
-                password: data.password
+                password: data.password,
+                createdAt: new Date()
             });
             const newUserID = result.insertedId;
             const user = await repositories.user.find({
