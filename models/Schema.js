@@ -1,85 +1,89 @@
-const Person = {
-    name: String,
-    emailAddress: String,
-    passwordHash: 'Hash',
-    phoneNumber: {
-        areaCode: Number,
-        number: Number
-    },
-    address: {
-        street: String,
-        postalCode: Number,
-        cityTown: String,
-        country: String,
-        state: String
-    },
-    placeOfPractice: {
-        nameOfPractice: String,
+module.exports = {
+    type: 'object',
+    required: ['email', 'password'],
+    properties: {
+        name: 'string',
+        emailAddress: 'string',
+        passwordHash: 'Hash',
+        phoneNumber: {
+            areaCode: 'string',
+            number: 'string'
+        },
         address: {
-            street: String,
-            postalCode: Number,
-            cityTown: String,
-            country: String,
-            state: String
-        }
-    },
-    formalEducation: [{
-        type: String,
-        major: String,
-        institute: String,
-        yearAttained: Number,
-        certificate: File,
-        verified: Boolean
-    }],
-    continuingEducation: [{
-        nameOfCourse: String,
-        numberOfHours: Number,
-        certificate: File,
-        dateAttended: Date,
-        verified: Boolean
-    }],
-    supervisionHours: [{
-        supervisor: {
-            name: String,
-            email: String,
-            phoneNumber: {
-                areaCode: Number,
-                number: Number
-            }
+            street: 'string',
+            postalCode: 'string',
+            cityTown: 'string',
+            country: 'string',
+            state: 'string'
         },
-        numberOfHours: Number,
-        documentation: File,
-        verified: Boolean
-    }],
-    supervisorFeedback: [{
-        question: '',
-        answer: Number
-    }],
-    workExperience: [{
-        organisation: {
-            name:String,
+        placeOfPractice: {
+            nameOfPractice: 'string',
             address: {
-                street: String,
-                postalCode: Number,
-                cityTown: String,
-                country: String,
-                state: String
+                street: 'string',
+                postalCode: 'string',
+                cityTown: 'string',
+                country: 'string',
+                state: 'string'
             }
         },
-        startDate: Date,
-        endDate: Date,
-        roles: String,
-        documentation: File,
-        verified: Boolean
-    }],
-    tests: [{
-        testType: String,
-        testDate: Date,
-        testScore: Number,
-        test: [{
-            testID: testObjectID,
-            questionID: QuestionObjectID,
-            score: Number
+        formalEducation: [{
+            type: 'string',
+            major: 'string',
+            institute: 'string',
+            graduationDate: 'number',
+            certificate: File,
+            verified: 'boolean'
+        }],
+        continuingEducation: [{
+            nameOfCourse: 'string',
+            numberOfHours: 'number',
+            certificate: File,
+            dateAttended: 'date-time',
+            verified: 'boolean'
+        }],
+        supervisionHours: [{
+            supervisor: {
+                name: 'string',
+                email: 'string',
+                phoneNumber: {
+                    areaCode: 'number',
+                    number: 'number'
+                }
+            },
+            numberOfHours: 'number',
+            documentation: File,
+            verified: 'boolean'
+        }],
+        supervisorFeedback: [{
+            question: '',
+            answer: 'number'
+        }],
+        workExperience: [{
+            organisation: {
+                name:'string',
+                address: {
+                    street: 'string',
+                    postalCode: 'number',
+                    cityTown: 'string',
+                    country: 'string',
+                    state: 'string'
+                }
+            },
+            startDate: 'date-time',
+            endDate: 'date-time',
+            roles: 'string',
+            documentation: File,
+            verified: 'boolean'
+        }],
+        tests: [{
+            testType: 'string',
+            testDate: 'date-time',
+            testScore: 'number',
+            test: [{
+                test_ID: testObjectID,
+                question_ID: QuestionObjectID,
+                score: 'number'
+            }]
         }]
-    }]
+    }
 };

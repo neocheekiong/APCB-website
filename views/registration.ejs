@@ -11,9 +11,16 @@
     <div class="container">
         <h1>Asia Pacific Certification Board</h1>
         <form action="/register" method="post">
-            <input type="text" name="email" id="email" placeholder="Your email address">
-            <input type="password" name="password" id="password"
-                placeholder="Your password, minimum of 10 alphanumeric characters">
+            <div class="input-field">
+                <input type="email" name="email" id="email" class="validate">
+                <label for="email">E-mail</label>
+            </div>
+            <div class="input-field">
+                <input type="password" name="password" id="password">
+                <label for="password">Password</label>
+                <span class="helper-text">10 or more Characters, at least 1 Uppercase Alphabet, at least 1 Lowercase,
+                    Alphabet, at least 1 Number and least 1 Special Character from @, $, !, %, *, ? and &</span>
+            </div>
             <input type="submit" value="Register Now">
         </form>
     </div>
