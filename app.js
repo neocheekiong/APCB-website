@@ -3,9 +3,9 @@
  */
 const express = require('express');
 const app = express();
-const port = process.env.port || 3000;
+const PORT = process.env.port || 3000;
 app.set('view engine', 'ejs');
-app.use(express.static('static'));
+app.use(express.static('public'));
 
 /**
  * Middleware
@@ -13,8 +13,8 @@ app.use(express.static('static'));
 const session = require('express-session');
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
-app.use(express.urlencoded({ extended: false }));
-const sessionSecret = process.env.SECRET || 'MySecret';
+app.use(express.urlencoded({ extended: true }));
+const sessionSecret = process.env.SECRET || 'sekrit';
 app.use(session({
     secret: sessionSecret,
     resave: false,
@@ -24,10 +24,10 @@ const db = require('./db');
 const routes = require('./routes');
 
 routes(app);
-
-app.listen(port, () => {
+app.post('/education' );
+app.listen(PORT, () => {
     db.connect();
-    console.log('Listening on port', port);
+    console.log('Listening on port', PORT);
 });
 
 

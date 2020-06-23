@@ -13,6 +13,8 @@ module.exports = {
      */
     renderPage: page => ( data = {}) => {
         return (request, response) => {
+            console.log('renderPage session data:', request.session.currentUser);
+            console.log('data:', data);
             response.render(page, data);
         };
     },
@@ -40,9 +42,10 @@ module.exports = {
             const newUserID = result.insertedId;
             const user = await repositories.user.find({
                 _id: new ObjectID(newUserID)
-            });
+            })('users');
             request.session.currentUser = user;
-            response.redirect(`/education/${user}`);
+            console.log('processRegistration session data:', request.session.currentUser);
+            response.redirect(`/education/${user._id}`);
         } catch (error) {
             console.log('ERROR:', error);
             response.render(views.ERROR_PAGE, {
