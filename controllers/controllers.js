@@ -58,5 +58,9 @@ module.exports = {
         const type = request.params.type;
         const data = request.body[type];
         return validators.user.regExpValidation(data)(type);
+    },
+
+    updateInfo (request, response) {
+        
     }
 };
