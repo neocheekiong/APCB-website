@@ -60,7 +60,9 @@ module.exports = {
         return validators.user.regExpValidation(data)(type);
     },
 
-    updateInfo (request, response) {
-        
+    updateInfo (data) {
+        return (request, response) => {
+
+        };
     }
 };
