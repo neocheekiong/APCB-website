@@ -4,7 +4,8 @@
   "description": "APCB website reimagined",
   "main": "app.js",
   "scripts": {
-    "test": "start"
+    "start": "node app.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
