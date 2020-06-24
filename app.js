@@ -14,7 +14,7 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
-const sessionSecret = process.env.SECRET || 'sekrit';
+const sessionSecret = process.env.SESSION_SECRET || 'sekrit';
 app.use(session({
     secret: sessionSecret,
     resave: false,
