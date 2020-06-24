@@ -13,7 +13,7 @@ module.exports = (app) => {
     app.get('/register', controllers.renderPage(views.REGISTRATION_PAGE)());
     app.post('/register', controllers.processRegistration);
     app.get('/personal/:userid', controllers.renderPage(views.PERSONAL_INFO_PAGE)({ user }));
-    app.post('/personal/:userid', controllers.updateInfo(views.PERSONAL_INFO_PAGE)({ user }));
+    app.post('/personal/:userid', controllers.updateInfo({ user }));
     app.get('/education/:userid', controllers.renderPage(views.EDUCATION_PAGE)({ user }));
     app.post('/education/:userid', controllers.renderPage(views.EDUCATION_PAGE)({ user }));
 };
