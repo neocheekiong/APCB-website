@@ -10,7 +10,7 @@
     <%- include('./partials/header') %>
     <div class="container">
         <h1>Your Personal Details</h1>
-        <form action="/personal" method="post">
+        <form action="/personal/<%= _id %>" method="post">
             <div class="form-group">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
