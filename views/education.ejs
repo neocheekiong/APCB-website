@@ -10,7 +10,7 @@
     <%- include('./partials/header') %>
     <div class="container">
         <h1>Your Formal Education</h1>
-        <form action="/education" method="post">
+        <form action="/education/<%= _id %>" method="post">
             <div class="form-group">
                 <label for="type">Type of qualification</label>
                 <select name="education[0][type]" id="type" class="form-control">
@@ -37,8 +37,8 @@
                 <input type="file" name="education[0][documentation]" id="documentation" class="form-control-file">
             </div>
             
-            <% if(user) { %>
-                <% user.education.forEach((education, index) => { %>
+            <% if(typeof education !== 'undefined') { %>
+                <% education.forEach((education, index) => { %>
                 <div class="form-group">
                     <select name="education[<%= index %>][type]" id="type">
                         <option value="Diploma">Diploma</option>

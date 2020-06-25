@@ -6,14 +6,17 @@ module.exports = (app) => {
     app.use((request, response, next) => {
         if(request.session.currentUser) {
             user = request.session.currentUser;
+            console.log('middleware user' ,user);
         }
         next();
     });
-    app.get('/', controllers.renderPage(views.INDEX_PAGE)({ user }));
-    app.get('/register', controllers.renderPage(views.REGISTRATION_PAGE)());
+    app.get('/', controllers.renderInfoPage(views.INDEX_PAGE));
+    app.get('/register', controllers.renderInfoPage(views.REGISTRATION_PAGE));
     app.post('/register', controllers.processRegistration);
-    app.get('/personal/:userid', controllers.renderPage(views.PERSONAL_INFO_PAGE)({ user }));
-    app.post('/personal/:userid', controllers.updateInfo({ user }));
-    app.get('/education/:userid', controllers.renderPage(views.EDUCATION_PAGE)({ user }));
-    app.post('/education/:userid', controllers.renderPage(views.EDUCATION_PAGE)({ user }));
+    app.get('/personal/:userid', controllers.renderInfoPage(views.PERSONAL_INFO_PAGE));
+    app.post('/personal/:userid', controllers.updatePersonal);
+    app.get('/education/:userid', controllers.renderInfoPage(views.EDUCATION_PAGE));
+    // app.post('/education/:userid', (request, response) => {
+    //     console.log('post', request.body);
+    // });
 };

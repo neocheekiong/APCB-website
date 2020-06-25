@@ -5,17 +5,17 @@ const { ObjectID } = require('mongodb');
 const validators = require('../validators');
 const { validateNewUser } = require('../validators/user-validators');
 const { find } = require('../repositories/userRepository');
+const cloudinary = require('cloudinary').v2.uploader;
 
 const SALT_ROUNDS = 10;
 module.exports = {
     /**
      * Renders specified page
      */
-    renderPage: page => ( data = {}) => {
+    renderInfoPage: page => {
         return (request, response) => {
             console.log('renderPage session data:', request.session.currentUser);
-            console.log('data:', data);
-            response.render(page, data);
+            response.render(page, request.session.currentUser);
         };
     },
 
@@ -45,7 +45,7 @@ module.exports = {
             })('users');
             request.session.currentUser = user;
             console.log('processRegistration session data:', request.session.currentUser);
-            response.redirect(`/education/${user._id}`);
+            response.redirect(`/personal/${user._id}`);
         } catch (error) {
             console.log('ERROR:', error);
             response.render(views.ERROR_PAGE, {
@@ -60,9 +60,14 @@ module.exports = {
         return validators.user.regExpValidation(data)(type);
     },
 
-    updateInfo (data) {
-        return (request, response) => {
+    async updatePersonal (request, response) {
+        const userID = request.session._id;
+        await repositories.user.update(userID)(request.body);
+        // cloudinary.upload('sample.jpg', { 'crop':'limit','tags':'samples','width':3000,'height':2000 }, function (result) { console.log(result); });
+        response.redirect(`/education/${userID}`);
+    },
 
-        };
+    async updateEducation (request, response) {
+        
     }
 };

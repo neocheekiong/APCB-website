@@ -24,11 +24,7 @@ const db = require('./db');
 const routes = require('./routes');
 
 routes(app);
-app.post('/education' );
 app.listen(PORT, () => {
     db.connect();
     console.log('Listening on port', PORT);
 });
-
-
-
