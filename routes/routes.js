@@ -12,4 +12,6 @@ module.exports = (app) => {
     app.post('/personal/:userid', controllers.updatePersonal);
     app.get('/education/:userid', controllers.renderInfoPage(views.EDUCATION_PAGE));
     app.post('/education/:userid', upload.array('documentation'), controllers.updateEducation);
+    app.get('/experience/:userid', controllers.renderInfoPage(views.EXPERIENCE_PAGE));
+    app.post('/experience/:userid', controllers.updateExperience);
 };

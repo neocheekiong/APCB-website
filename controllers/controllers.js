@@ -85,6 +85,7 @@ module.exports = {
     },
 
     async updateEducation (request, response) {
+        const userid = request.params.userid;
         let documentation = request.files;
         let education = request.body.education;
         for (const index in documentation) {
@@ -92,7 +93,7 @@ module.exports = {
                 const document = documentation[index];
                 try {
                     let result = await cloudinary.uploader.upload(document.path, {
-                        public_id: `uploads/${request.params.userid}/${document.originalname}`
+                        public_id: `uploads/${userid}/${document.originalname}`
                     });
                     console.log('cloudinary upload result', index, result);
                     education[index].documentation = result.url;
@@ -102,7 +103,31 @@ module.exports = {
             }
         }
         console.log('education', education);
-        repositories.user.update(request.params.userid)({ education: education });
-        response.redirect('/');
+        
+        repositories.user.update(userid)({ education: education });
+        response.redirect(`/experience/${userid}`);
+    },
+    async updateExperience (request, response) {
+        const userid = request.params.userid;
+        let documentation = request.files;
+        let experience = request.body.experience;
+        for (const index in documentation) {
+            if (documentation.hasOwnProperty(index)) {
+                const document = documentation[index];
+                try {
+                    
+                    let result = await cloudinary.uploader.upload(document.path, {
+                        public_id: `uploads/${userid}/${document.originalname}`
+                    });
+                    console.log('cloudinary upload result', index, result);
+                    experience[index].documentation = result.url;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }
+        console.log('experience', experience);
+        repositories.user.update(userid)({ experience: experience });
+        response.redirect(`/courses/${userid}`); 
     }
 };

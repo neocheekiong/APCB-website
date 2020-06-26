@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <title>Register</title>
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+    <div class="container">
+        <h1>Your Formal Education</h1>
+        <form action="/education/<%= _id %>" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="type">Type of qualification</label>
+                <select name="education[0][type]" id="type" class="form-control">
+                    <option value="Diploma">Diploma</option>
+                    <option value="Bachelor's">Bachelor's Degree</option>
+                    <option value="Master's">Master's Degree</option>
+                    <option value="PhD">PhD</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="major">Major</label>
+                <input type="text" name="education[0][major]" id="major" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="institute">Institute</label>
+                <input type="text" name="education[0][institute]" id="institute" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="graduation-date">Graduation Date</label>
+                <input type="date" name="education[0][graduation-date]" id="graduation-date" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="documentation">Documentation</label>
+                <input type="file" name="documentation" id="documentation" class="form-control-file">
+            </div>
+            <div class="form-group">
+                <label for="type">Type of qualification</label>
+                <select name="education[1][type]" id="type" class="form-control">
+                    <option value="Diploma">Diploma</option>
+                    <option value="Bachelor's">Bachelor's Degree</option>
+                    <option value="Master's">Master's Degree</option>
+                    <option value="PhD">PhD</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="major">Major</label>
+                <input type="text" name="education[1][major]" id="major" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="institute">Institute</label>
+                <input type="text" name="education[1][institute]" id="institute" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="graduation-date">Graduation Date</label>
+                <input type="date" name="education[1][graduation-date]" id="graduation-date" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="documentation">Documentation</label>
+                <input type="file" name="documentation" id="documentation" class="form-control-file">
+            </div>
+            <% if(typeof education !== 'undefined') { %>
+                <% education.forEach((education, index) => { %>
+                <div class="form-group">
+                    <select name="education[<%= index %>][type]" id="type">
+                        <option value="Diploma">Diploma</option>
+                        <option value="Bachelor's">Bachelor's Degree</option>
+                        <option value="Master's">Master's Degree</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                    <label>Type of qualification</label>
+                </div>
+                <div class="form-group">
+                    <label for="major">Major</label>
+                    <input type="text" name="education[<%= index %>][major]" id="major">
+                </div>
+                <div class="form-group">
+                    <label for="institute">Institute</label>
+                    <input type="text" name="education[<%= index %>][institute]" id="institute">
+                    
+                </div>
+                <div class="form-group">
+                    <label for="graduation-date">Graduation Date</label>
+                    <input type="date" name="education[<%= index %>][graduation-date]" id="graduation-date"
+                        class="form-control">
+    
+                </div>
+                <div class="form-group">
+                    <label for="documentation">Documentation</label>
+                    <input type="file" name="education[<%= index %>][documentation]" id="documentation"
+                        class="form-control">
+                </div>
+                <% }) %>
+                <% } %>
+                <input type="submit" value="Save and Next">
+        </form>
+    </div>
+    <%- include('./partials/footer') %>
+</body>
+
+</html>
