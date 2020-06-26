@@ -55,15 +55,13 @@ module.exports = {
             let result = await repositories.user.insertUser({
                 email: data.email,
                 password: data.password,
+                role: 'Member',
                 createdAt: new Date()
             });
             const newUserID = result.insertedId;
-            const user = await repositories.user.find({
-                _id: new ObjectID(newUserID)
-            })('users');
-            request.session.currentUser = user;
+            request.session.currentUser = newUserID;
             console.log('processRegistration session data:', request.session.currentUser);
-            response.redirect(`/personal/${user._id}`);
+            response.redirect(`/personal/${newUserID}`);
         } catch (error) {
             console.log('ERROR:', error);
             response.render(views.ERROR_PAGE, {
@@ -129,5 +127,30 @@ module.exports = {
         console.log('experience', experience);
         repositories.user.update(userid)({ experience: experience });
         response.redirect(`/courses/${userid}`); 
-    }
+    },
+
+    updateDocumentedField: async (type) => async (request, response) => {
+        const userid = request.params.userid;
+        let documentation = request.files;
+        let data = request.body[type];
+        for (const index in documentation) {
+            if (documentation.hasOwnProperty(index)) {
+                const document = documentation[index];
+                try {
+                    let result = await cloudinary.uploader.upload(document.path, {
+                        public_id: `uploads/${userid}/${document.originalname}`
+                    });
+                    console.log('cloudinary upload result', index, result);
+                    data[index].documentation = result.url;
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }
+        console.log('education', data);
+        const updateField = {};
+        updateField[type] = data;
+        repositories.user.update(userid)(updateField);
+        response.redirect(`/dashboard/${userid}`);
+    },
 };

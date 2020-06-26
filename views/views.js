@@ -4,5 +4,6 @@ module.exports = {
     ERROR_PAGE: 'error.ejs',
     EDUCATION_PAGE: 'education.ejs',
     PERSONAL_INFO_PAGE: 'personal-info.ejs',
-    EXPERIENCE_PAGE: 'work-experience.ejs'
+    EXPERIENCE_PAGE: 'work-experience.ejs',
+    DASHBOARD_PAGE: 'dashboard.ejs'
 };
