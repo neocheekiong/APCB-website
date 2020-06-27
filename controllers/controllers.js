@@ -21,6 +21,7 @@ cloudinary.config({
  * Encryption
  */
 const bcrypt = require('bcrypt');
+const { user } = require('../repositories');
 const SALT_ROUNDS = 10;
 module.exports = {
     /**
@@ -28,10 +29,13 @@ module.exports = {
      */
     renderInfoPage: page => {
         return async (request, response) => {
+
             console.log('renderPage session data:', request.session.currentUser);
             const userdata = await repositories.user.findUser({
                 _id: new ObjectID(request.session.currentUser)
             });
+
+            checkAuthorisation(request, response);
             // console.log(userdata);
             response.render(page, userdata);
         };
@@ -59,7 +63,7 @@ module.exports = {
             let result = await repositories.user.insertUser({
                 email: data.email,
                 password: data.password,
-                role: 'Member',
+                role: 'member',
                 createdAt: new Date()
             });
             const newUserID = result.insertedId;
@@ -89,22 +93,25 @@ module.exports = {
     updateDocumentedField: (type) => async (request, response) => {
         const userid = request.params.userid;
         let documentation = request.files;
-        console.log('Request Body:', request.body, 'Type:', type);
+        console.log('Request Body:', request, 'Type:', type);
         let data = request.body[type];
         console.log('Form Data:', data);
+        checkAuthorisation (request, response);
         for (const index in documentation) {
             const document = documentation[index];
             try {
                 let result = await cloudinary.uploader.upload(document.path, {
-                    public_id: `uploads/${userid}/${document.originalname}`
+                    folder: `uploads/${userid}`,
+                    use_filename: true,
+                    resource_type: 'auto'
                 });
                 console.log('cloudinary upload result', index, result);
-                data[index].documentation = result.url;
+                data[index].documentation = result.secure_url;
             } catch (err) {
                 console.log(err);
             }
         }
-        
+
         const updateField = {};
         updateField[type] = data;
         repositories.user.update(userid)(updateField);
@@ -145,3 +152,12 @@ module.exports = {
         //TODO
     }
 };
+function checkAuthorisation (request, response) {
+    console.log('Checking Authorisation...', 'Request Params:', request.params, 'REQUEST SESSION:', request.session);
+    if (request.params.userid && request.params.userid !== request.session.currentUser && user.role === 'member') {
+        response.render(views.ERROR_PAGE, {
+            'message': 'You\'re not supposed to be looking at others\' pages!'
+        });
+    }
+}
+
