@@ -111,4 +111,34 @@ module.exports = {
         repositories.user.update(userid)(updateField);
         response.redirect(`/dashboard/${userid}`);
     },
+
+    async login (request, response) {
+        const userEmail = request.body.email;
+        const submittedPassword = request.body.password;
+        try {
+            let user = await repositories.user.findUser({
+                email: userEmail
+            });
+            if (!user) {
+                throw new Error('404 User not found');
+            }
+            if (!bcrypt.compareSync(submittedPassword, user.password)) {
+                throw new Error('Wrong Password');
+            }
+            const userid = user._id;
+            request.session.currentUser = userid;
+            response.redirect(`/dashboard/${userid}`);
+        } catch (error) {
+            console.error(error.message);
+            response.render('error.ejs', {
+                message: 'Wrong Username or Password'
+            });
+        }
+    },
+
+    logout (request, response) {
+        return request.session.destroy(() => {
+            response.redirect('/');
+        });
+    }
 };

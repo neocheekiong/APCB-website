@@ -9,6 +9,7 @@ module.exports = (app) => {
     app.get('/register', controllers.renderInfoPage(views.REGISTRATION_PAGE));
     app.post('/register', controllers.processRegistration);
     app.get('/login', controllers.renderInfoPage(views.LOGIN_PAGE));
+    app.post('/login', controllers.login);
     app.get('/personal/:userid', controllers.renderInfoPage(views.PERSONAL_INFO_PAGE));
     app.post('/personal/:userid', controllers.updatePersonal);
     app.get('/education/:userid', controllers.renderInfoPage(views.EDUCATION_PAGE));
