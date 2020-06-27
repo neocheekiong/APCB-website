@@ -35,7 +35,7 @@ module.exports = {
                 _id: new ObjectID(request.session.currentUser)
             });
 
-            checkAuthorisation(request, response);
+            checkAuthorisation(request, response, userdata);
             // console.log(userdata);
             response.render(page, userdata);
         };
@@ -152,12 +152,13 @@ module.exports = {
         //TODO
     }
 };
-function checkAuthorisation (request, response) {
+function checkAuthorisation (request, response, user) {
     console.log('Checking Authorisation...', 'Request Params:', request.params, 'REQUEST SESSION:', request.session);
+    console.log('request.params.userid !== request.session.currentUser',request.params.userid !== request.session.currentUser);
+
     if (request.params.userid && request.params.userid !== request.session.currentUser && user.role === 'member') {
-        response.render(views.ERROR_PAGE, {
-            'message': 'You\'re not supposed to be looking at others\' pages!'
-        });
+        console.log('did test pass?');
+        response.render(views.ERROR_PAGE, { message: 'You\'re not supposed to peek at others!' });
     }
 }
 
