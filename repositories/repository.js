@@ -4,19 +4,19 @@ const {
 } = require('mongodb');
 
 module.exports = {
-    async insertUser (data) {
-        let result = await db.users.insertOne(data);
+    insert: (data) => async (collection) => {
+        let result = await db[collection].insertOne(data);
         return result;
     },
 
-    async findUser (data) {
-        return await db.users.findOne(data);
+    find: (data) => async (collection) => {
+        return await db[collection].findOne(data);
     },
 
-    update: (userID) => async (data) => {
+    update: (objectID) => (data) => async (collection) => {
         try {
-            let result = await db.users.updateOne({
-                _id: new ObjectID(userID)
+            let result = await db[collection].updateOne({
+                _id: new ObjectID(objectID)
             }, {
                 $set: data
             });

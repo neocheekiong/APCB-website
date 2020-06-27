@@ -21,7 +21,6 @@ cloudinary.config({
  * Encryption
  */
 const bcrypt = require('bcrypt');
-const { user } = require('../repositories');
 const SALT_ROUNDS = 10;
 module.exports = {
     /**
@@ -31,9 +30,9 @@ module.exports = {
         return async (request, response) => {
 
             console.log('renderPage session data:', request.session.currentUser);
-            const userdata = await repositories.user.findUser({
+            const userdata = await repositories.find({
                 _id: new ObjectID(request.session.currentUser)
-            });
+            })('users');
 
             checkAuthorisation(request, response, userdata);
             // console.log(userdata);
@@ -42,9 +41,9 @@ module.exports = {
     },
 
     async renderEducationPage (request, response) {
-        let user = await repositories.user.findUser({
+        let user = await repositories.find({
             _id: new ObjectID(request.params.userid)
-        });
+        })('users');
         response.render(views.EDUCATION_PAGE, {
             user
         });
@@ -60,12 +59,12 @@ module.exports = {
                 throw new Error(validation);
             }
             data.password = bcrypt.hashSync(data.password, SALT_ROUNDS);
-            let result = await repositories.user.insertUser({
+            let result = await repositories.insert({
                 email: data.email,
                 password: data.password,
                 role: 'member',
                 createdAt: new Date()
-            });
+            })('users');
             const newUserID = result.insertedId;
             request.session.currentUser = newUserID;
             console.log('processRegistration session data:', request.session.currentUser);
@@ -86,7 +85,7 @@ module.exports = {
 
     async updatePersonal (request, response) {
         const userID = request.params.userid;
-        await repositories.user.update(userID)(request.body);
+        await repositories.update(userID)(request.body)('users');
         response.redirect(`/education/${userID}`);
     },
 
@@ -114,7 +113,7 @@ module.exports = {
 
         const updateField = {};
         updateField[type] = data;
-        repositories.user.update(userid)(updateField);
+        repositories.user.update(userid)(updateField)('users');
         response.redirect(`/memberdashboard/${userid}`);
     },
 
@@ -122,9 +121,9 @@ module.exports = {
         const userEmail = request.body.email;
         const submittedPassword = request.body.password;
         try {
-            let user = await repositories.user.findUser({
+            let user = await repositories.find({
                 email: userEmail
-            });
+            })('users');
             if (!user) {
                 throw new Error('404 User not found');
             }
@@ -149,7 +148,14 @@ module.exports = {
     },
 
     assessIndividual (request, response) {
-        //TODO
+        const userID = request.params.userid;
+        repositories.insert({
+            _userID: new ObjectID(userID),
+            requestDate: new Date(),
+            status: 'pending'
+        });
+        // TODO Send Email
+        response.redirect(`membersdashboard/${userID}`);
     }
 };
 function checkAuthorisation (request, response, user) {
