@@ -20,7 +20,7 @@ module.exports = {
             }, {
                 $set: data
             });
-            console.log('Update Result:', result);
+            // console.log('Update Result:', result);
             return result;
         } catch (error) {
             console.log(error);

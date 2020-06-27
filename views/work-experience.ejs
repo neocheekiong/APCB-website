@@ -3,21 +3,21 @@
 
 <head>
     <%- include('./partials/head') %>
-    <title>Register</title>
+    <title>Work Experience</title>
 </head>
 
 <body>
     <%- include('./partials/header') %>
     <div class="container">
-        <h1>Your Formal Education</h1>
-        <form action="/education/<%= _id %>" method="post" enctype="multipart/form-data">
+        <h1>Your Work Experience</h1>
+        <form action="/experience/<%= _id %>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="type">Organisation</label>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label for="name" class="input-group-text">Name</label>
                     </div>
-                    <textarea name="experience[0][organisation][name]" id="name-0" class="form-control"></textarea>
+                    <input type="text" name="experience[0][organisation][name]" id="name-0" class="form-control">
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -38,11 +38,11 @@
             <div class="form-group">
                 <label for="role">Role(s)</label>
                 <input type="text" name="experience[0][role]" id="role-0" class="form-control">
-                <span class="form-text text-muted">In hours: 1 year counts for 2000 hours</span>
+                
             </div>
             <div class="form-group">
                 <label for="duration">Duration</label>
-                <input type="text" name="experience[0][duration]" id="duration-0" class="form-control">
+                <input type="number" name="experience[0][duration]" id="duration-0" class="form-control"><span class="form-text text-muted">In hours: 1 year counts for 2000 hours</span>
             </div>
             <div class="form-group">
                 <label for="documentation">Documentation</label>
@@ -90,7 +90,8 @@
                 </div>
             <% }) %>
             <% } %>
-            <input type="submit" value="Save and Next">
+            <input type="submit" value="Save" class="btn btn-primary">
+            <a href="/memberdashboard/<%= _id %>" class="btn btn-danger">Cancel</a>
         </form>
     </div>
     <%- include('./partials/footer') %>

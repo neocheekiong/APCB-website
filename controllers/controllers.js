@@ -27,16 +27,13 @@ module.exports = {
      * Renders specified page
      */
     renderInfoPage: page => {
-        return (request, response) => {
+        return async (request, response) => {
             console.log('renderPage session data:', request.session.currentUser);
-            const userdata = repositories.user.findUser({
+            const userdata = await repositories.user.findUser({
                 _id: new ObjectID(request.session.currentUser)
-            }).then(
-                () => {
-                    console.log(userdata);
-                    response.render(page, userdata);
-                }
-            );
+            });
+            // console.log(userdata);
+            response.render(page, userdata);
         };
     },
 
@@ -92,7 +89,9 @@ module.exports = {
     updateDocumentedField: (type) => async (request, response) => {
         const userid = request.params.userid;
         let documentation = request.files;
+        console.log('Request Body:', request.body, 'Type:', type);
         let data = request.body[type];
+        console.log('Form Data:', data);
         for (const index in documentation) {
             const document = documentation[index];
             try {
@@ -105,11 +104,11 @@ module.exports = {
                 console.log(err);
             }
         }
-        console.log('education', data);
+        
         const updateField = {};
         updateField[type] = data;
         repositories.user.update(userid)(updateField);
-        response.redirect(`/dashboard/${userid}`);
+        response.redirect(`/memberdashboard/${userid}`);
     },
 
     async login (request, response) {
@@ -127,7 +126,7 @@ module.exports = {
             }
             const userid = user._id;
             request.session.currentUser = userid;
-            response.redirect(`/dashboard/${userid}`);
+            response.redirect(`/${user.role}dashboard/${userid}`);
         } catch (error) {
             console.error(error.message);
             response.render('error.ejs', {
@@ -140,5 +139,9 @@ module.exports = {
         return request.session.destroy(() => {
             response.redirect('/');
         });
+    },
+
+    assessIndividual (request, response) {
+        //TODO
     }
 };

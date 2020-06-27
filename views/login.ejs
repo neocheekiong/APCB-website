@@ -3,7 +3,7 @@
 
 <head>
     <%- include('./partials/head') %>
-    <title>Register</title>
+    <title>Login</title>
 </head>
 
 <body>
@@ -19,7 +19,8 @@
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
-            <input type="submit" value="Login">
+            <input type="submit" value="Login" class="btn btn-primary">
+            <a href="/" class="btn btn-danger">Cancel</a>
         </form>
     </div>
     <%- include('./partials/footer') %>
