@@ -9,10 +9,8 @@ module.exports = {
         return result;
     },
 
-    find (data) {
-        return async function (collection) {
-            return await db[collection].findOne(data);
-        };
+    async findUser (data) {
+        return await db.users.findOne(data);
     },
 
     update: (userID) => async (data) => {

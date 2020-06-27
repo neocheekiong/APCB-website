@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017';
+const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = 'apcb';
 const COLLECTIONS = {
     USERS: 'users'

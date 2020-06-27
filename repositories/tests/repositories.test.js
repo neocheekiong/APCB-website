@@ -12,15 +12,15 @@ describe('Find Users', () => {
     });
 
     it('should return an empty object if email does not exist in database', async () => {
-        const email = 'neocheekiong@gmail.com';
-        let result = await repository.user.find({ email: email })('users');
+        const email = '123@xyz.com';
+        let result = await repository.user.findUser({ email: email });
         expect(result).to.be.eql(null);
     });
 
     it('should return an object if email exists in the database', async () => {
         const email = 'abc@xyz.com';
         await repository.user.insertUser({ email });
-        let result = await repository.user.find({ email: email })('users');
+        let result = await repository.user.findUser({ email: email });
         expect(result).to.be.an('object');
     });
 

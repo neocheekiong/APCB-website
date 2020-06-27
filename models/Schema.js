@@ -31,13 +31,13 @@ module.exports = {
             major: 'string',
             institute: 'string',
             graduationDate: 'number',
-            certificate: File,
+            certificate: 'file',
             verified: 'boolean'
         }],
         continuingEducation: [{
             nameOfCourse: 'string',
             numberOfHours: 'number',
-            certificate: File,
+            certificate: 'file',
             dateAttended: 'date-time',
             verified: 'boolean'
         }],
@@ -51,7 +51,7 @@ module.exports = {
                 }
             },
             numberOfHours: 'number',
-            documentation: File,
+            documentation: 'file',
             verified: 'boolean'
         }],
         supervisorFeedback: [{
@@ -72,7 +72,7 @@ module.exports = {
             startDate: 'date-time',
             endDate: 'date-time',
             roles: 'string',
-            documentation: File,
+            documentation: 'file',
             verified: 'boolean'
         }],
         tests: [{
@@ -80,8 +80,8 @@ module.exports = {
             testDate: 'date-time',
             testScore: 'number',
             test: [{
-                test_ID: testObjectID,
-                question_ID: QuestionObjectID,
+                test_ID: 'testObjectID',
+                question_ID: 'QuestionObjectID',
                 score: 'number'
             }]
         }]

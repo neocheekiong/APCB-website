@@ -13,7 +13,7 @@ describe('Email Checking', () => {
         await db.disconnect();
     });
     it('should return true if the email does not exist in DB', async () => {
-        const address = 'neocheekiong@gmail.com';
+        const address = '123@xyz.com';
         let result = await validators.user.doesEmailExist(address);
         expect(result).to.be.false;
     });

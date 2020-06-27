@@ -1,9 +1,10 @@
 /**
  * Configuring App
  */
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
@@ -14,7 +15,7 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
-const sessionSecret = process.env.SESSION_SECRET || 'sekrit';
+const sessionSecret = process.env.SESSION_SECRET;
 app.use(session({
     secret: sessionSecret,
     resave: false,

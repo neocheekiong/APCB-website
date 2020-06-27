@@ -1,6 +1,4 @@
-const {
-    find
-} = require('../repositories/userRepository');
+const repositories = require('../repositories');
 
 const VALIDATION_ERROR_MESSAGES = {
     EMAIL_EXISTS: 'Email exists',
@@ -25,9 +23,9 @@ function regExpValidation (string) {
 }
 
 async function doesEmailExist (email) {
-    let result = await find({
+    let result = await repositories.user.findUser({
         email: email
-    })('users');
+    });
     return !!result;
 }
 

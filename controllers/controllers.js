@@ -14,7 +14,7 @@ const cloudinary = require('cloudinary').v2;
 cloudinary.config({
     cloud_name: 'apcb',
     api_key: '331716551633671',
-    api_secret: 'G9q1hPY9Iq7FCo83lNv49Ke1eb4'
+    api_secret: process.env.CLOUDINARY_SECRET
 });
 
 /**
@@ -29,14 +29,21 @@ module.exports = {
     renderInfoPage: page => {
         return (request, response) => {
             console.log('renderPage session data:', request.session.currentUser);
-            response.render(page, request.session.currentUser);
+            const userdata = repositories.user.findUser({
+                _id: new ObjectID(request.session.currentUser)
+            }).then(
+                () => {
+                    console.log(userdata);
+                    response.render(page, userdata);
+                }
+            );
         };
     },
 
     async renderEducationPage (request, response) {
-        let user = await repositories.user.find({
+        let user = await repositories.user.findUser({
             _id: new ObjectID(request.params.userid)
-        })('users');
+        });
         response.render(views.EDUCATION_PAGE, {
             user
         });
@@ -82,69 +89,20 @@ module.exports = {
         response.redirect(`/education/${userID}`);
     },
 
-    async updateEducation (request, response) {
-        const userid = request.params.userid;
-        let documentation = request.files;
-        let education = request.body.education;
-        for (const index in documentation) {
-            if (documentation.hasOwnProperty(index)) {
-                const document = documentation[index];
-                try {
-                    let result = await cloudinary.uploader.upload(document.path, {
-                        public_id: `uploads/${userid}/${document.originalname}`
-                    });
-                    console.log('cloudinary upload result', index, result);
-                    education[index].documentation = result.url;
-                } catch (err) {
-                    console.log(err);
-                }
-            }
-        }
-        console.log('education', education);
-        
-        repositories.user.update(userid)({ education: education });
-        response.redirect(`/experience/${userid}`);
-    },
-    async updateExperience (request, response) {
-        const userid = request.params.userid;
-        let documentation = request.files;
-        let experience = request.body.experience;
-        for (const index in documentation) {
-            if (documentation.hasOwnProperty(index)) {
-                const document = documentation[index];
-                try {
-                    
-                    let result = await cloudinary.uploader.upload(document.path, {
-                        public_id: `uploads/${userid}/${document.originalname}`
-                    });
-                    console.log('cloudinary upload result', index, result);
-                    experience[index].documentation = result.url;
-                } catch (err) {
-                    console.log(err);
-                }
-            }
-        }
-        console.log('experience', experience);
-        repositories.user.update(userid)({ experience: experience });
-        response.redirect(`/courses/${userid}`); 
-    },
-
-    updateDocumentedField: async (type) => async (request, response) => {
+    updateDocumentedField: (type) => async (request, response) => {
         const userid = request.params.userid;
         let documentation = request.files;
         let data = request.body[type];
         for (const index in documentation) {
-            if (documentation.hasOwnProperty(index)) {
-                const document = documentation[index];
-                try {
-                    let result = await cloudinary.uploader.upload(document.path, {
-                        public_id: `uploads/${userid}/${document.originalname}`
-                    });
-                    console.log('cloudinary upload result', index, result);
-                    data[index].documentation = result.url;
-                } catch (err) {
-                    console.log(err);
-                }
+            const document = documentation[index];
+            try {
+                let result = await cloudinary.uploader.upload(document.path, {
+                    public_id: `uploads/${userid}/${document.originalname}`
+                });
+                console.log('cloudinary upload result', index, result);
+                data[index].documentation = result.url;
+            } catch (err) {
+                console.log(err);
             }
         }
         console.log('education', data);
