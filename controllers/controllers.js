@@ -153,7 +153,7 @@ module.exports = {
             _userID: new ObjectID(userID),
             requestDate: new Date(),
             status: 'pending'
-        });
+        })('approvals');
         // TODO Send Email
         response.redirect(`membersdashboard/${userID}`);
     }
