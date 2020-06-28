@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <title>Be Assessed</title>
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+    <div class="container align-middle" style="height: 700vh;">
+        <h1>Ensure you have entered all your info correctly. The Registrar will review your submission any time in the next 3 days.</h1>
+        <form action="/assess/<%= _id %>" method="post">
+            <input type="submit" value="Submit!">
+        </form>
+    </div>
+    <%- include('./partials/footer') %>
+</body>
+
+</html>

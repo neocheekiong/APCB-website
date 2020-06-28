@@ -16,7 +16,7 @@
                     <div class="input-group-prepend">
                         <label for="name" class="input-group-text">Full name</label>
                     </div>
-                    <input type="text" name="name" id="name" class="form-control">
+                    <input type="text" name="name" id="name" class="form-control" required>
                 </div>
                 <span class="form-text text-muted">Do format your name appropriately. This will be used on your
                     certificate.</span>
@@ -26,7 +26,7 @@
                     <div class="input-group-prepend">
                         <label for="address" class="input-group-text">Address</label>
                     </div>
-                    <textarea name="address" id="address" class="form-control"></textarea>
+                    <textarea name="address" id="address" required class="form-control"></textarea>
                 </div>
                 <div class="input-group mb3">
                     <div class="input-group-prepend">
@@ -43,7 +43,7 @@
                     <div class="input-group-prepend">
                         <%- include('./partials/country-code.ejs', { name: 'phoneNumber[country-code]' }) %>
                     </div>
-                    <input type="text" name="phoneNumber[number]" id="phone-number" class="form-control" placeholder="Phone Number">
+                    <input type="text" name="phoneNumber[number]" id="phone-number" class="form-control" placeholder="Phone Number" required>
                 </div>
             </div>
             <div class="form-group">
@@ -71,6 +71,7 @@
                     </div>
                     <%- include('./partials/countries.ejs', { name: 'placeOfPractice[country]' }) %>
                 </div>
+                <span class="form-text text-muted">We display this on the list of certified Therapists, so you may get referrals this way.</span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary">
             <a href="/memberdashboard/<%= _id %>" class="btn btn-danger">Cancel</a>

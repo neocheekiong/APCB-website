@@ -20,9 +20,9 @@ module.exports = (app) => {
     app.post('/training/:userid', upload.array('documentation'), controllers.updateDocumentedField('training'));
     app.get('/supervision/:userid', controllers.renderInfoPage(views.SUPERVISION_PAGE));
     app.post('/supervision/:userid', upload.array('documentation'), controllers.updateDocumentedField('supervision'));
-    app.get('/assess/:userid', controllers.renderInfoPage(views.SUPERVISION_PAGE));
+    app.get('/assess/:userid', controllers.renderInfoPage(views.ASSESSMENT_CONFIRMATION_PAGE));
     app.post('/assess/:userid', controllers.assessIndividual);
-    app.get('/renewal/:userid', controllers.renderInfoPage(views.SUPERVISION_PAGE));
+    app.get('/renewal/:userid', controllers.renderInfoPage(views.ASSESSMENT_CONFIRMATION_PAGE));
     app.post('/renewal/:userid', controllers.assessIndividual);
     app.get('/memberdashboard/:userid', controllers.renderInfoPage(views.MEMBER_DASHBOARD_PAGE));
 };
