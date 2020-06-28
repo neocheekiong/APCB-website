@@ -113,7 +113,7 @@ module.exports = {
 
         const updateField = {};
         updateField[type] = data;
-        repositories.user.update(userid)(updateField)('users');
+        repositories.update(userid)(updateField)('users');
         response.redirect(`/memberdashboard/${userid}`);
     },
 
