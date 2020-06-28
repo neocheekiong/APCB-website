@@ -30,7 +30,7 @@ module.exports = {
         return async (request, response) => {
 
             console.log('renderPage session data:', request.session.currentUser);
-            const userdata = await repositories.find({
+            const userdata = await repositories.findOne({
                 _id: new ObjectID(request.session.currentUser)
             })('users');
 
@@ -41,7 +41,7 @@ module.exports = {
     },
 
     async renderEducationPage (request, response) {
-        let user = await repositories.find({
+        let user = await repositories.findOne({
             _id: new ObjectID(request.params.userid)
         })('users');
         response.render(views.EDUCATION_PAGE, {
@@ -85,6 +85,10 @@ module.exports = {
 
     async updatePersonal (request, response) {
         const userID = request.params.userid;
+        const userdata = await repositories.findOne({
+            _id: new ObjectID(request.session.currentUser)
+        })('users');
+        checkAuthorisation(request, response, userdata);
         await repositories.update(userID)(request.body)('users');
         response.redirect(`/education/${userID}`);
     },
@@ -95,7 +99,10 @@ module.exports = {
         console.log('Request Body:', request, 'Type:', type);
         let data = request.body[type];
         console.log('Form Data:', data);
-        checkAuthorisation (request, response);
+        const userdata = await repositories.findOne({
+            _id: new ObjectID(request.session.currentUser)
+        })('users');
+        checkAuthorisation(request, response, userdata);
         for (const index in documentation) {
             const document = documentation[index];
             try {
@@ -121,7 +128,7 @@ module.exports = {
         const userEmail = request.body.email;
         const submittedPassword = request.body.password;
         try {
-            let user = await repositories.find({
+            let user = await repositories.findOne({
                 email: userEmail
             })('users');
             if (!user) {
@@ -135,7 +142,7 @@ module.exports = {
             response.redirect(`/${user.role}dashboard/${userid}`);
         } catch (error) {
             console.error(error.message);
-            response.render('error.ejs', {
+            response.render(views.ERROR_PAGE, {
                 message: 'Wrong Username or Password'
             });
         }
@@ -147,24 +154,43 @@ module.exports = {
         });
     },
 
-    assessIndividual (request, response) {
+    async assessIndividual (request, response) {
         const userID = request.params.userid;
+        const userdata = await repositories.findOne({
+            _id: new ObjectID(request.session.currentUser)
+        })('users');
         repositories.insert({
             _userID: new ObjectID(userID),
+            candidateName: userdata.name,
             requestDate: new Date(),
-            status: 'pending'
+            status: 'pending',
+            type: 'new applicant'
         })('approvals');
         // TODO Send Email
         response.redirect(`membersdashboard/${userID}`);
+    },
+
+    async renderRegistrarDashboard (request, response) {
+        const registrarID = request.params.userid;
+        const userdata = await repositories.findOne({
+            _id: new ObjectID(registrarID)
+        })('users');
+        checkAuthorisation(request, response, userdata);
+        const approvalRequests = await repositories.findAll({
+            status: 'pending'
+        })('approvals');
+        response.render(views.REGISTRAR_DASHBOARD, {
+            user: userdata,
+            requests: approvalRequests
+        });
     }
 };
-function checkAuthorisation (request, response, user) {
-    console.log('Checking Authorisation...', 'Request Params:', request.params, 'REQUEST SESSION:', request.session);
-    console.log('request.params.userid !== request.session.currentUser',request.params.userid !== request.session.currentUser);
 
+function checkAuthorisation (request, response, user) {
     if (request.params.userid && request.params.userid !== request.session.currentUser && user.role === 'member') {
         console.log('did test pass?');
-        response.render(views.ERROR_PAGE, { message: 'You\'re not supposed to peek at others!' });
+        response.render(views.ERROR_PAGE, {
+            message: 'You\'re not supposed to peek at others!'
+        });
     }
 }
-

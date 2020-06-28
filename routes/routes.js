@@ -25,4 +25,7 @@ module.exports = (app) => {
     app.get('/renewal/:userid', controllers.renderInfoPage(views.ASSESSMENT_CONFIRMATION_PAGE));
     app.post('/renewal/:userid', controllers.assessIndividual);
     app.get('/memberdashboard/:userid', controllers.renderInfoPage(views.MEMBER_DASHBOARD_PAGE));
+    app.get('/registrardashboard/:userid', controllers.renderRegistrarDashboard(views.REGISTRAR_DASHBOARD)); // TODO
+    app.get('/view/:userid', controllers.renderViewPage(views.VIEW_PROFILE)); // TODO
+    app.put('/approve/:requestid', controllers.approveRequest); // TODO
 };

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+    <h1>Welcome back, <%= user.name %>!</h1>
+    <div class="container">
+        <h1>Pending Approval Requests</h1>
+        <div class="row members">
+            <% requests.forEach((request) => { %>
+                <div class="card col-sm-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= request.candidateName %></h5>
+                        <a href="/view/<%= _userID %>" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <%- include('./partials/footer') %>
+</body>
+
+</html>

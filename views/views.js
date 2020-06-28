@@ -9,5 +9,7 @@ module.exports = {
     LOGIN_PAGE: 'login.ejs',
     TRAINING_PAGE: 'training.ejs',
     SUPERVISION_PAGE: 'supervision.ejs',
-    ASSESSMENT_CONFIRMATION_PAGE: 'assessment.ejs', //TODO
+    ASSESSMENT_CONFIRMATION_PAGE: 'assessment.ejs',
+    REGISTRAR_DASHBOARD: 'registrar-dashboard.ejs',
+    VIEW_PROFILE: 'view.ejs', // TODO
 };

@@ -9,7 +9,7 @@ module.exports = {
         return result;
     },
 
-    find: (data) => async (collection) => {
+    findOne: (data) => async (collection) => {
         return await db[collection].findOne(data);
     },
 
@@ -25,5 +25,11 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
+    },
+
+    findAll: (data) => async (collection) => {
+        return await db[collection].find({
+            data
+        }).toArray();
     }
 };

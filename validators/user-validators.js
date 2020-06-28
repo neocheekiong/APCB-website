@@ -23,7 +23,7 @@ function regExpValidation (string) {
 }
 
 async function doesEmailExist (email) {
-    let result = await repositories.find({
+    let result = await repositories.findOne({
         email: email
     })('users');
     return !!result;
