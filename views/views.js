@@ -11,5 +11,5 @@ module.exports = {
     SUPERVISION_PAGE: 'supervision.ejs',
     ASSESSMENT_CONFIRMATION_PAGE: 'assessment.ejs',
     REGISTRAR_DASHBOARD: 'registrar-dashboard.ejs',
-    VIEW_PROFILE: 'view.ejs', // TODO
+    VIEW_PROFILE: 'view-profile.ejs', // TODO
 };

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+    <div class="container">
+        <h1><%= candidate.name %></h1>
+        <h2>Education</h2>
+        <div class="row">
+            <% candidate.education.forEach((item) => { %>
+            <div class="card col-sm-3">
+                <div class="card-body">
+                    <h5 class="card-title"><%= item.type %> in <%= item.major %></h5>
+                    <p class="card-text">From <%= item.institute %> on <%= item.graduationDate %></p>
+                    <a href="<%= item.documentation %>" class="btn btn-primary">View Documentation</a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <h2>Work Experience</h2>
+        <div class="row">
+            <% candidate.experience.forEach((item) => { %>
+            <div class="card col-sm-3">
+                <div class="card-body">
+                    <h5 class="card-title"><%= item.duration %> hours doing <%= item.role %></h5>
+                    <p class="card-text">At <%= item.organisation.name %> on <%= item.graduationDate %></p>
+                    <a href="<%= item.documentation %>" class="btn btn-primary">View Documentation</a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <h2>Addiction-Related Training</h2>
+        <div class="row">
+            <% candidate.training.forEach((item) => { %>
+            <div class="card col-sm-3">
+                <div class="card-body">
+                    <h5 class="card-title"><%= item.numberOfHours %> hours </h5>
+                    <p class="card-text"><%= item.name %> on <%= item.date %></p>
+                    <a href="<%= item.documentation %>" class="btn btn-primary">View Documentation</a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <h2>Supervision</h2>
+        <div class="row">
+            <% candidate.training.forEach((item) => { %>
+            <div class="card col-sm-3">
+                <div class="card-body">
+                    <h5 class="card-title"><%= item.numberOfHours %> hours with <%= item.supervisor.name %></h5>
+                    <p class="card-text"> For <%= item.date %></p>
+                    <a href="<%= item.documentation %>" class="btn btn-primary">View Documentation</a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+
+    </div>
+    </div>
+    <%- include('./partials/footer') %>
+</body>
+
+</html>

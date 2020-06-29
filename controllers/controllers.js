@@ -5,8 +5,6 @@ const {
 } = require('mongodb');
 const validators = require('../validators');
 
-
-
 /**
  * Cloudinary Config
  */
@@ -28,24 +26,22 @@ module.exports = {
      */
     renderInfoPage: page => {
         return async (request, response) => {
-
+            if (typeof request.params.userid == undefined)
+                denyNonOwnerNonAdmin(request, response, userData);
             console.log('renderPage session data:', request.session.currentUser);
-            const userdata = await repositories.findOne({
+            const userData = await repositories.findOne({
                 _id: new ObjectID(request.session.currentUser)
             })('users');
-
-            checkAuthorisation(request, response, userdata);
-            // console.log(userdata);
-            response.render(page, userdata);
+            response.render(page, userData);
         };
     },
 
     async renderEducationPage (request, response) {
-        let user = await repositories.findOne({
+        let userData = await repositories.findOne({
             _id: new ObjectID(request.params.userid)
         })('users');
         response.render(views.EDUCATION_PAGE, {
-            user
+            userData
         });
     },
 
@@ -85,10 +81,10 @@ module.exports = {
 
     async updatePersonal (request, response) {
         const userID = request.params.userid;
-        const userdata = await repositories.findOne({
+        const userData = await repositories.findOne({
             _id: new ObjectID(request.session.currentUser)
         })('users');
-        checkAuthorisation(request, response, userdata);
+        denyNonOwnerNonAdmin(request, response, userData);
         await repositories.update(userID)(request.body)('users');
         response.redirect(`/education/${userID}`);
     },
@@ -99,10 +95,10 @@ module.exports = {
         console.log('Request Body:', request, 'Type:', type);
         let data = request.body[type];
         console.log('Form Data:', data);
-        const userdata = await repositories.findOne({
+        const userData = await repositories.findOne({
             _id: new ObjectID(request.session.currentUser)
         })('users');
-        checkAuthorisation(request, response, userdata);
+        denyNonOwnerNonAdmin(request, response, userData);
         for (const index in documentation) {
             const document = documentation[index];
             try {
@@ -154,14 +150,14 @@ module.exports = {
         });
     },
 
-    async assessIndividual (request, response) {
+    async submitApplication (request, response) {
         const userID = request.params.userid;
-        const userdata = await repositories.findOne({
+        const userData = await repositories.findOne({
             _id: new ObjectID(request.session.currentUser)
         })('users');
         repositories.insert({
             _userID: new ObjectID(userID),
-            candidateName: userdata.name,
+            candidateName: userData.name,
             requestDate: new Date(),
             status: 'pending',
             type: 'new applicant'
@@ -172,25 +168,59 @@ module.exports = {
 
     async renderRegistrarDashboard (request, response) {
         const registrarID = request.params.userid;
-        const userdata = await repositories.findOne({
+        const userData = await repositories.findOne({
             _id: new ObjectID(registrarID)
         })('users');
-        checkAuthorisation(request, response, userdata);
+
+        denyNonOwnerNonAdmin(request, response, userData);
+
         const approvalRequests = await repositories.findAll({
             status: 'pending'
         })('approvals');
+
         response.render(views.REGISTRAR_DASHBOARD, {
-            user: userdata,
+            user: userData,
             requests: approvalRequests
+        });
+    },
+
+    async renderViewPage (request, response) {
+        allowRegistrarAndAdmin(request, response);
+        const userID = request.params.userid;
+        
+        const userData = await repositories.findOne({
+            _id: new ObjectID(userID)
+        })('users');
+
+        const loggedInUser = await repositories.findOne({
+            _id: new ObjectID(request.session.currentUser)
+        })('users');
+
+        response.render(views.VIEW_PROFILE, {
+            user: loggedInUser,
+            candidate: userData
         });
     }
 };
 
-function checkAuthorisation (request, response, user) {
-    if (request.params.userid && request.params.userid !== request.session.currentUser && user.role === 'member') {
-        console.log('did test pass?');
+/**
+ * Denies access to users who are not the owner of the profile
+ * Admin can view
+ */
+function denyNonOwnerNonAdmin (request, response, user) {
+    if (request.params.userid && request.params.userid !== request.session.currentUser && (user.role !== 'admin')) {
+        console.log('Thou shalt not pass!');
         response.render(views.ERROR_PAGE, {
             message: 'You\'re not supposed to peek at others!'
+        });
+    }
+}
+
+function allowRegistrarAndAdmin (request, response, user) {
+    if ((user.role !== 'admin') || (user.role !== 'registrar')) {
+        console.log('Thou shalt not pass!');
+        response.render(views.ERROR_PAGE, {
+            message: 'You\'re not supposed to peek at this!'
         });
     }
 }
