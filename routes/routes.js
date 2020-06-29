@@ -25,7 +25,7 @@ module.exports = (app) => {
     app.get('/renewal/:userid', controllers.renderInfoPage(views.ASSESSMENT_CONFIRMATION_PAGE));
     app.post('/renewal/:userid', controllers.submitApplication);
     app.get('/memberdashboard/:userid', controllers.renderInfoPage(views.MEMBER_DASHBOARD_PAGE));
-    app.get('/registrardashboard/:userid', controllers.renderRegistrarDashboard(views.REGISTRAR_DASHBOARD));
-    app.get('/view/:userid', controllers.renderViewPage(views.VIEW_PROFILE));
-    app.put('/approve/:requestid', controllers.approveRequest); // TODO
+    app.get('/registrardashboard/:userid', controllers.renderRegistrarDashboard);
+    app.get('/view/:userid', controllers.renderViewPage);
+    app.put('/approve/:userid', controllers.approveRequest); // TODO
 };

@@ -59,7 +59,12 @@ module.exports = {
                 email: data.email,
                 password: data.password,
                 role: 'member',
-                createdAt: new Date()
+                createdAt: new Date(),
+                education: [],
+                training:[],
+                supervision:[],
+                experience:[],
+                tests: [],
             })('users');
             const newUserID = result.insertedId;
             request.session.currentUser = newUserID;
@@ -98,7 +103,9 @@ module.exports = {
         const userData = await repositories.findOne({
             _id: new ObjectID(request.session.currentUser)
         })('users');
+
         denyNonOwnerNonAdmin(request, response, userData);
+
         for (const index in documentation) {
             const document = documentation[index];
             try {
@@ -200,6 +207,25 @@ module.exports = {
             user: loggedInUser,
             candidate: userData
         });
+    },
+
+    async approveRequest (request, response) {
+        allowRegistrarAndAdmin();
+        
+        let approvalRequest = request.params.userid;
+        let today = new Date().getVarDate();
+        let expiryDate = new Date(today.getFullYear + 3, today.getMonth, today.getDay);
+        let config = await repositories.findOne({})('config');
+        repositories.update(approvalRequest)({
+            $set: {
+                status: 'approved',
+                approvalDate: today,
+                expiryDate: expiryDate,
+                certificateLevel: request.body.certificateLevel,
+                certificateNumber: `SA${today.getFullYear}${config.lastCertificateNumber}SG`,
+            }
+        })('users');
+        response.redirect(`/registrardashboard/${request.session.currentUser}`);
     }
 };
 
