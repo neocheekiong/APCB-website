@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT;
 const db = require('./db');
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
+
 
 /**
  * Middleware
@@ -45,6 +45,7 @@ app.use(session({
 const routes = require('./routes');
 
 routes(app);
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
     db.connect();
