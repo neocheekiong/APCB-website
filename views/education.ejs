@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <%- include('./partials/head') %>
+    <%- include('./partials/head', { currentUser }) %>
     <title>Register</title>
 </head>
 
@@ -36,7 +36,7 @@
                 <label for="documentation">Documentation</label>
                 <input type="file" name="documentation" id="documentation" class="form-control-file">
             </div>
-            <% if(typeof education === 'array') { %>
+            <% if(typeof currentUser.education === 'array') { %>
                 <% education.forEach((education, index) => { %>
                 <div class="form-group">
                     <select name="education[<%= index %>][type]" id="type">
@@ -69,7 +69,7 @@
                 <% }) %>
                 <% } %>
                 <input type="submit" value="Save" class="btn btn-primary">
-                <a href="/memberdashboard/<%= _id %>" class="btn btn-danger">Cancel</a>
+                <a href="/memberdashboard/<%= currentUser._id %>" class="btn btn-danger">Cancel</a>
         </form>
     </div>
     <%- include('./partials/footer') %>

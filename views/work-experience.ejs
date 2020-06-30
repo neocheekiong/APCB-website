@@ -10,7 +10,7 @@
     <%- include('./partials/header') %>
     <div class="container">
         <h1>Your Work Experience</h1>
-        <form action="/experience/<%= _id %>" method="post" enctype="multipart/form-data">
+        <form action="/experience/<%= currentUser._id %>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="type">Organisation</label>
                 <div class="input-group mb-3">
@@ -49,8 +49,8 @@
                 <input type="file" name="documentation" id="documentation" class="form-control-file">
             </div>
             
-            <% if(typeof experience !== 'undefined') { %>
-            <% experience.forEach((experience, index) => { %>
+            <% if(typeof currentUser.experience !== 'undefined') { %>
+            <% currentUser.experience.forEach((experience, index) => { %>
                 <div class="form-group">
                     <label for="type">Organisation</label>
                     <div class="input-group mb-3">
@@ -91,7 +91,7 @@
             <% }) %>
             <% } %>
             <input type="submit" value="Save" class="btn btn-primary">
-            <a href="/memberdashboard/<%= _id %>" class="btn btn-danger">Cancel</a>
+            <a href="/memberdashboard/<%= currentUser._id %>" class="btn btn-danger">Cancel</a>
         </form>
     </div>
     <%- include('./partials/footer') %>

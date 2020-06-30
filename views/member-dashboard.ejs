@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-    <%- include('./partials/head') %>
+    <%- include('./partials/head', { currentUser }) %>
     <title>Dashboard</title>
 </head>
 
 <body>
     <%- include('./partials/header') %>
-    <h1>Welcome back, <%= name %>!</h1>
+    <h1>Welcome back, <%= currentUser.name %>!</h1>
     <div class="container">
         <div class="row members">
             <div class="card col-sm-3">

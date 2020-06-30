@@ -10,7 +10,7 @@
     <%- include('./partials/header') %>
     <div class="container">
         <h1>Your Addiction-related Training</h1>
-        <form action="/supervision/<%= _id %>" method="post" enctype="multipart/form-data">
+        <form action="/supervision/<%= currentUser._id %>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="type">Your Supervisor</label>
                 <div class="input-group mb-3">
@@ -38,8 +38,8 @@
                 <input type="file" name="documentation" id="documentation" class="form-control-file">
             </div>
 
-            <% if(typeof supervision === 'array') { %>
-            <% supervision.forEach((supervision, index) => { %>
+            <% if(typeof currentUser.supervision === 'array') { %>
+            <% supervision.forEach((currentUser.supervision, index) => { %>
                 <div class="form-group">
                     <label for="type">Name of Training</label>
                     <div class="input-group mb-3">
@@ -69,7 +69,7 @@
             <% }) %>
             <% } %>
             <input type="submit" value="Save" class="btn btn-primary">
-            <a href="/memberdashboard/<%= _id %>" class="btn btn-danger">Cancel</a>
+            <a href="/memberdashboard/<%= currentUser._id %>" class="btn btn-danger">Cancel</a>
         </form>
     </div>
     <%- include('./partials/footer') %>

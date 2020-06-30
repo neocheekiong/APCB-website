@@ -24,25 +24,18 @@ module.exports = {
     /**
      * Renders specified page
      */
-    renderInfoPage: page => {
+    renderUserInfoPage: page => {
         return async (request, response) => {
-            if (typeof request.params.userid == undefined)
-                denyNonOwnerNonAdmin(request, response, userData);
-            console.log('renderPage session data:', request.session.currentUser);
+            const sessionUser = request.session.currentUser;
             const userData = await repositories.findOne({
-                _id: new ObjectID(request.session.currentUser)
+                _id: new ObjectID(sessionUser)
             })('users');
-            response.render(page, userData);
+            console.log('renderPage session data:', sessionUser);
+            console.log('userdata', userData);
+            if (typeof request.params.userid !== 'undefined')
+                authorizationRequired(['members', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You\'re not allowed to view this page!' });
+            response.render(page, { currentUser: userData });
         };
-    },
-
-    async renderEducationPage (request, response) {
-        let userData = await repositories.findOne({
-            _id: new ObjectID(request.params.userid)
-        })('users');
-        response.render(views.EDUCATION_PAGE, {
-            userData
-        });
     },
 
     async processRegistration (request, response) {
@@ -61,9 +54,9 @@ module.exports = {
                 role: 'member',
                 createdAt: new Date(),
                 education: [],
-                training:[],
-                supervision:[],
-                experience:[],
+                training: [],
+                supervision: [],
+                experience: [],
                 tests: [],
             })('users');
             const newUserID = result.insertedId;
@@ -85,26 +78,28 @@ module.exports = {
     },
 
     async updatePersonal (request, response) {
-        const userID = request.params.userid;
+        const pageUser = request.params.userid;
+        const sessionUser = request.session.currentUser;
         const userData = await repositories.findOne({
-            _id: new ObjectID(request.session.currentUser)
+            _id: new ObjectID(pageUser)
         })('users');
-        denyNonOwnerNonAdmin(request, response, userData);
-        await repositories.update(userID)(request.body)('users');
-        response.redirect(`/education/${userID}`);
+        authorizationRequired(['members', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
+        await repositories.update(pageUser)(request.body)('users');
+        response.redirect(`/education/${sessionUser}`);
     },
 
     updateDocumentedField: (type) => async (request, response) => {
         const userid = request.params.userid;
+        const sessionUser = request.session.currentUser;
         let documentation = request.files;
         console.log('Request Body:', request, 'Type:', type);
         let data = request.body[type];
         console.log('Form Data:', data);
         const userData = await repositories.findOne({
-            _id: new ObjectID(request.session.currentUser)
+            _id: new ObjectID(sessionUser)
         })('users');
 
-        denyNonOwnerNonAdmin(request, response, userData);
+        authorizationRequired(['members', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
 
         for (const index in documentation) {
             const document = documentation[index];
@@ -170,48 +165,52 @@ module.exports = {
             type: 'new applicant'
         })('approvals');
         // TODO Send Email
-        response.redirect(`membersdashboard/${userID}`);
+        response.redirect(`memberdashboard/${userID}`);
     },
 
     async renderRegistrarDashboard (request, response) {
         const registrarID = request.params.userid;
+        const sessionUser = request.session.currentUser;
         const userData = await repositories.findOne({
             _id: new ObjectID(registrarID)
         })('users');
 
-        denyNonOwnerNonAdmin(request, response, userData);
+        authorizationRequired(['registrar', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
 
         const approvalRequests = await repositories.findAll({
             status: 'pending'
-        })('approvals');
+        })('users');
 
+        console.log(userData);
         response.render(views.REGISTRAR_DASHBOARD, {
-            user: userData,
+            currentUser: userData,
             requests: approvalRequests
         });
     },
 
     async renderViewPage (request, response) {
-        allowRegistrarAndAdmin(request, response);
-        const userID = request.params.userid;
         
+        const userID = request.params.userid;
+        const sessionUser = request.session.currentUser;
         const userData = await repositories.findOne({
             _id: new ObjectID(userID)
         })('users');
 
         const loggedInUser = await repositories.findOne({
-            _id: new ObjectID(request.session.currentUser)
+            _id: new ObjectID(sessionUser)
         })('users');
 
+        authorizationRequired(['registrar', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
+
         response.render(views.VIEW_PROFILE, {
-            user: loggedInUser,
+            currentUser: loggedInUser,
             candidate: userData
         });
     },
 
     async approveRequest (request, response) {
         allowRegistrarAndAdmin();
-        
+
         let approvalRequest = request.params.userid;
         let today = new Date().getVarDate();
         let expiryDate = new Date(today.getFullYear + 3, today.getMonth, today.getDay);
@@ -250,3 +249,16 @@ function allowRegistrarAndAdmin (request, response, user) {
         });
     }
 }
+
+/**
+ * 
+ * @param {array} allowedRoles array of allowed roles
+ * 
+ */
+const authorizationRequired = allowedRoles => requireOwnership => sessionData => userData => {
+    const userRoleAllowed = allowedRoles.includes(userData.role);
+    if (requireOwnership) {
+        return userData.role === 'admin' || sessionData === userData.id && userRoleAllowed;
+    }
+    return userRoleAllowed;
+};
