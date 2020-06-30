@@ -28,8 +28,14 @@ module.exports = {
     },
 
     findAll: (data) => async (collection) => {
-        return await db[collection].find({
-            data
-        }).toArray();
+        try {
+            const result = await db[collection].find({
+                data
+            }).toArray();
+            console.log('Collection:', collection, 'data:', data, result);
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 };

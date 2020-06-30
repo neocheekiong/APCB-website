@@ -24,7 +24,7 @@ module.exports = {
     /**
      * Renders specified page
      */
-    renderMemberInfoPage: page => (allowedRoles = ['member', 'registrar', 'admin']) => {
+    renderMemberInfoPage: page => (allowedRoles = ['public']) => {
         return async (request, response) => {
             const sessionUser = request.session.currentUser;
             const userData = await repositories.findOne({
@@ -185,7 +185,7 @@ module.exports = {
         });
 
         const approvalRequests = await repositories.findAll({
-            status: 'pending'
+            'status': 'pending'
         })('users');
         console.log('approval Requests', approvalRequests);
         console.log(userData);
@@ -248,8 +248,9 @@ module.exports = {
 const authorizationRequired = allowedRoles => userData => {
     if (allowedRoles.includes('public')) {
         return true;
-    } else {
+    } else if(userData) {
         const userRoleAllowed = allowedRoles.includes(userData.role);
         return userData.role === 'admin' || userRoleAllowed;
     }
+    return false;
 };

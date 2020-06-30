@@ -16,7 +16,10 @@
         </li>
         <% } else { %>
         <li class="nav-item float-right">
-          <a class="nav-link" href="/logout">logout</a>
+          <a class="nav-link" href="/<%= currentUser.role %>dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item float-right">
+          <a class="nav-link" href="/logout">Logout</a>
         </li>
         <% } %>
         <li class="nav-item dropdown float-right">
