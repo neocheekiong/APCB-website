@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <%- include('./partials/header') %>
+    <%- include('./partials/header', { currentUser }) %>
     <h1>Welcome back, <%= currentUser.name %>!</h1>
     <div class="container">
         <h1>Pending Approval Requests</h1>

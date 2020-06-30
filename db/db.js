@@ -18,4 +18,6 @@ module.exports = {
     disconnect () {
         return client.close();
     },
+    DB_NAME,
+    MONGO_URL
 };

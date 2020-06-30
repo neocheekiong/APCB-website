@@ -5,7 +5,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT;
-
+const db = require('./db');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
@@ -25,7 +25,8 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 const store = new MongoDBStore({
-    uri: process.env.MONGO_URL,
+    uri: db.MONGO_URL,
+    databaseName: db.DB_NAME,
     collection: 'sessions'
 });
 
@@ -40,7 +41,7 @@ app.use(session({
     store: store
 }));
 
-const db = require('./db');
+
 const routes = require('./routes');
 
 routes(app);

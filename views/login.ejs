@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-    <%- include('./partials/head', { currentUser }) %>
+    <%- include('./partials/head') %>
     <title>Login</title>
 </head>
 
 <body>
-    <%- include('./partials/header') %>
+    <%- include('./partials/header', { currentUser }) %>
     <div class="container">
         <h1>Asia Pacific Certification Board</h1>
         <form action="/login" method="post">

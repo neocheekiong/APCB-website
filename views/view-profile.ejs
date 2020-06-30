@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <%- include('./partials/header') %>
+    <%- include('./partials/header', { currentUser }) %>
     <div class="container">
         <h1><%= candidate.name %></h1>
         <h2>Education</h2>
@@ -58,7 +58,8 @@
             </div>
             <% }) %>
         </div>
-
+        <form action="approve/<%= candidate._id %>" method="post"><input type="submit" value="Approve" class="btn btn-primary"></form>
+        <form action="deny/<%= candidate._id %>" method="post"><input type="submit" value="Deny" class="btn btn-danger"></form>
     </div>
     </div>
     <%- include('./partials/footer') %>

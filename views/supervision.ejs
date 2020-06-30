@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <%- include('./partials/header') %>
+    <%- include('./partials/header', { currentUser }) %>
     <div class="container">
         <h1>Your Addiction-related Training</h1>
         <form action="/supervision/<%= currentUser._id %>" method="post" enctype="multipart/form-data">
@@ -69,7 +69,7 @@
             <% }) %>
             <% } %>
             <input type="submit" value="Save" class="btn btn-primary">
-            <a href="/memberdashboard/<%= currentUser._id %>" class="btn btn-danger">Cancel</a>
+            <a href="/memberdashboard/" class="btn btn-danger">Cancel</a>
         </form>
     </div>
     <%- include('./partials/footer') %>

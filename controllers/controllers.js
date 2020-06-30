@@ -24,17 +24,22 @@ module.exports = {
     /**
      * Renders specified page
      */
-    renderUserInfoPage: page => {
+    renderMemberInfoPage: page => (allowedRoles = ['member', 'registrar', 'admin']) => {
         return async (request, response) => {
             const sessionUser = request.session.currentUser;
             const userData = await repositories.findOne({
                 _id: new ObjectID(sessionUser)
             })('users');
-            console.log('renderPage session data:', sessionUser);
+            console.log('renderPage session data:', sessionUser, 'page ID');
             console.log('userdata', userData);
-            if (typeof request.params.userid !== 'undefined')
-                authorizationRequired(['members', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You\'re not allowed to view this page!' });
-            response.render(page, { currentUser: userData });
+
+            authorizationRequired(allowedRoles)(userData) || response.render(views.ERROR_PAGE, {
+                message: 'You\'re not allowed to view this page!',
+                currentUser: userData
+            });
+            response.render(page, {
+                currentUser: userData
+            });
         };
     },
 
@@ -62,11 +67,12 @@ module.exports = {
             const newUserID = result.insertedId;
             request.session.currentUser = newUserID;
             console.log('processRegistration session data:', request.session.currentUser);
-            response.redirect(`/personal/${newUserID}`);
+            response.redirect('/personal');
         } catch (error) {
             console.log('ERROR:', error);
             response.render(views.ERROR_PAGE, {
-                message: error
+                message: error,
+                currentUser: null
             });
         }
     },
@@ -78,18 +84,19 @@ module.exports = {
     },
 
     async updatePersonal (request, response) {
-        const pageUser = request.params.userid;
         const sessionUser = request.session.currentUser;
         const userData = await repositories.findOne({
-            _id: new ObjectID(pageUser)
+            _id: new ObjectID(sessionUser)
         })('users');
-        authorizationRequired(['members', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
-        await repositories.update(pageUser)(request.body)('users');
-        response.redirect(`/education/${sessionUser}`);
+        authorizationRequired(['member', 'admin'])(userData) || response.render(views.ERROR_PAGE, {
+            message: 'You are not allowed here!',
+            currentUser: userData
+        });
+        await repositories.update(sessionUser)(request.body)('users');
+        response.redirect('/memberdashboard');
     },
 
     updateDocumentedField: (type) => async (request, response) => {
-        const userid = request.params.userid;
         const sessionUser = request.session.currentUser;
         let documentation = request.files;
         console.log('Request Body:', request, 'Type:', type);
@@ -99,7 +106,10 @@ module.exports = {
             _id: new ObjectID(sessionUser)
         })('users');
 
-        authorizationRequired(['members', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
+        authorizationRequired(['member', 'admin'])(userData) || response.render(views.ERROR_PAGE, {
+            message: 'You are not allowed here!',
+            currentUser: userData
+        });
 
         for (const index in documentation) {
             const document = documentation[index];
@@ -118,8 +128,8 @@ module.exports = {
 
         const updateField = {};
         updateField[type] = data;
-        repositories.update(userid)(updateField)('users');
-        response.redirect(`/memberdashboard/${userid}`);
+        repositories.update(sessionUser)(updateField)('users');
+        response.redirect('/memberdashboard');
     },
 
     async login (request, response) {
@@ -137,11 +147,12 @@ module.exports = {
             }
             const userid = user._id;
             request.session.currentUser = userid;
-            response.redirect(`/${user.role}dashboard/${userid}`);
+            response.redirect(`/${user.role}dashboard/`);
         } catch (error) {
             console.error(error.message);
             response.render(views.ERROR_PAGE, {
-                message: 'Wrong Username or Password'
+                message: 'Wrong Username or Password',
+                currentUser: null
             });
         }
     },
@@ -154,28 +165,28 @@ module.exports = {
 
     async submitApplication (request, response) {
         const userID = request.params.userid;
-        const userData = await repositories.findOne({
-            _id: new ObjectID(request.session.currentUser)
+        console.log('submit', userID);
+        const userData = await repositories.update({
+            _id: userID
+        })({
+            $set: {
+                status: 'pending'
+            }
         })('users');
-        repositories.insert({
-            _userID: new ObjectID(userID),
-            candidateName: userData.name,
-            requestDate: new Date(),
-            status: 'pending',
-            type: 'new applicant'
-        })('approvals');
         // TODO Send Email
-        response.redirect(`memberdashboard/${userID}`);
+        response.redirect('/memberdashboard');
     },
 
     async renderRegistrarDashboard (request, response) {
-        const registrarID = request.params.userid;
         const sessionUser = request.session.currentUser;
         const userData = await repositories.findOne({
-            _id: new ObjectID(registrarID)
+            _id: new ObjectID(sessionUser)
         })('users');
 
-        authorizationRequired(['registrar', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
+        authorizationRequired(['registrar', 'admin'])(userData) || response.render(views.ERROR_PAGE, {
+            message: 'You are not allowed here!',
+            currentUser: userData
+        });
 
         const approvalRequests = await repositories.findAll({
             status: 'pending'
@@ -189,18 +200,20 @@ module.exports = {
     },
 
     async renderViewPage (request, response) {
-        
-        const userID = request.params.userid;
+        const viewTarget = request.params.userid;
         const sessionUser = request.session.currentUser;
         const userData = await repositories.findOne({
-            _id: new ObjectID(userID)
+            _id: new ObjectID(viewTarget)
         })('users');
 
         const loggedInUser = await repositories.findOne({
             _id: new ObjectID(sessionUser)
         })('users');
 
-        authorizationRequired(['registrar', 'admin'])(true)(sessionUser)(userData) || response.render(views.ERROR_PAGE, { message: 'You are not allowed here!' });
+        authorizationRequired(['registrar', 'admin'])(userData) || response.render(views.ERROR_PAGE, {
+            message: 'You are not allowed here!',
+            currentUser: userData
+        });
 
         response.render(views.VIEW_PROFILE, {
             currentUser: loggedInUser,
@@ -209,9 +222,14 @@ module.exports = {
     },
 
     async approveRequest (request, response) {
-        allowRegistrarAndAdmin();
-
+        const sessionUser = request.session.currentUser;
         let approvalRequest = request.params.userid;
+        const userData = await repositories.findOne({
+            _id: new ObjectID(sessionUser)
+        })('users');
+        authorizationRequired(['registrar'])(userData);
+
+
         let today = new Date().getVarDate();
         let expiryDate = new Date(today.getFullYear + 3, today.getMonth, today.getDay);
         let config = await repositories.findOne({})('config');
@@ -224,41 +242,20 @@ module.exports = {
                 certificateNumber: `SA${today.getFullYear}${config.lastCertificateNumber}SG`,
             }
         })('users');
-        response.redirect(`/registrardashboard/${request.session.currentUser}`);
+        response.redirect('/registrardashboard');
     }
 };
-
-/**
- * Denies access to users who are not the owner of the profile
- * Admin can view
- */
-function denyNonOwnerNonAdmin (request, response, user) {
-    if (request.params.userid && request.params.userid !== request.session.currentUser && (user.role !== 'admin')) {
-        console.log('Thou shalt not pass!');
-        response.render(views.ERROR_PAGE, {
-            message: 'You\'re not supposed to peek at others!'
-        });
-    }
-}
-
-function allowRegistrarAndAdmin (request, response, user) {
-    if ((user.role !== 'admin') || (user.role !== 'registrar')) {
-        console.log('Thou shalt not pass!');
-        response.render(views.ERROR_PAGE, {
-            message: 'You\'re not supposed to peek at this!'
-        });
-    }
-}
 
 /**
  * 
  * @param {array} allowedRoles array of allowed roles
  * 
  */
-const authorizationRequired = allowedRoles => requireOwnership => sessionData => userData => {
-    const userRoleAllowed = allowedRoles.includes(userData.role);
-    if (requireOwnership) {
-        return userData.role === 'admin' || sessionData === userData.id && userRoleAllowed;
+const authorizationRequired = allowedRoles => userData => {
+    if (allowedRoles.includes('public')) {
+        return true;
+    } else {
+        const userRoleAllowed = allowedRoles.includes(userData.role);
+        return userData.role === 'admin' || userRoleAllowed;
     }
-    return userRoleAllowed;
 };
