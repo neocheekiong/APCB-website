@@ -167,7 +167,7 @@ module.exports = {
         const userID = request.params.userid;
         console.log('submit userID', userID);
         await repositories.update(userID)({
-            status: 'pending'
+            'status': 'pending'
         })('users');
         // TODO Send Email
         response.redirect('/memberdashboard');
@@ -198,6 +198,7 @@ module.exports = {
     async renderViewPage (request, response) {
         const viewTarget = request.params.userid;
         const sessionUser = request.session.currentUser;
+        console.log('view Target',viewTarget);
         const userData = await repositories.findOne({
             _id: new ObjectID(viewTarget)
         })('users');
@@ -205,8 +206,8 @@ module.exports = {
         const loggedInUser = await repositories.findOne({
             _id: new ObjectID(sessionUser)
         })('users');
-
-        authorizationRequired(['registrar', 'admin'])(userData) || response.render(views.ERROR_PAGE, {
+        console.log('view Page logged in:', loggedInUser);
+        authorizationRequired(['registrar'])(loggedInUser) || response.render(views.ERROR_PAGE, {
             message: 'You are not allowed here!',
             currentUser: userData
         });
@@ -246,6 +247,7 @@ module.exports = {
  * 
  */
 const authorizationRequired = allowedRoles => userData => {
+    console.log('Auth function:',allowedRoles, userData);
     if (allowedRoles.includes('public')) {
         return true;
     } else if(userData) {
