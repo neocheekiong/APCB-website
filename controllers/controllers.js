@@ -115,7 +115,7 @@ module.exports = {
             const document = documentation[index];
             try {
                 let result = await cloudinary.uploader.upload(document.path, {
-                    folder: `uploads/${userid}`,
+                    folder: `uploads/${sessionUser}`,
                     use_filename: true,
                     resource_type: 'auto'
                 });
@@ -165,13 +165,9 @@ module.exports = {
 
     async submitApplication (request, response) {
         const userID = request.params.userid;
-        console.log('submit', userID);
-        const userData = await repositories.update({
-            _id: userID
-        })({
-            $set: {
-                status: 'pending'
-            }
+        console.log('submit userID', userID);
+        await repositories.update(userID)({
+            status: 'pending'
         })('users');
         // TODO Send Email
         response.redirect('/memberdashboard');
@@ -191,7 +187,7 @@ module.exports = {
         const approvalRequests = await repositories.findAll({
             status: 'pending'
         })('users');
-
+        console.log('approval Requests', approvalRequests);
         console.log(userData);
         response.render(views.REGISTRAR_DASHBOARD, {
             currentUser: userData,
@@ -234,13 +230,11 @@ module.exports = {
         let expiryDate = new Date(today.getFullYear + 3, today.getMonth, today.getDay);
         let config = await repositories.findOne({})('config');
         repositories.update(approvalRequest)({
-            $set: {
-                status: 'approved',
-                approvalDate: today,
-                expiryDate: expiryDate,
-                certificateLevel: request.body.certificateLevel,
-                certificateNumber: `SA${today.getFullYear}${config.lastCertificateNumber}SG`,
-            }
+            status: 'approved',
+            approvalDate: today,
+            expiryDate: expiryDate,
+            certificateLevel: request.body.certificateLevel,
+            certificateNumber: `SA${today.getFullYear}${config.lastCertificateNumber}SG`,
         })('users');
         response.redirect('/registrardashboard');
     }
