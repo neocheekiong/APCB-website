@@ -198,24 +198,29 @@ module.exports = {
     async renderViewPage (request, response) {
         const viewTarget = request.params.userid;
         const sessionUser = request.session.currentUser;
-        console.log('view Target',viewTarget);
-        const userData = await repositories.findOne({
-            _id: new ObjectID(viewTarget)
-        })('users');
+        console.log('view Target', viewTarget);
+        try {
 
-        const loggedInUser = await repositories.findOne({
-            _id: new ObjectID(sessionUser)
-        })('users');
-        console.log('view Page logged in:', loggedInUser);
-        authorizationRequired(['registrar'])(loggedInUser) || response.render(views.ERROR_PAGE, {
-            message: 'You are not allowed here!',
-            currentUser: userData
-        });
+            const userData = await repositories.findOne({
+                _id: new ObjectID(viewTarget)
+            })('users');
+            const loggedInUser = await repositories.findOne({
+                _id: new ObjectID(sessionUser)
+            })('users');
+            console.log('view Page logged in:', loggedInUser);
+            authorizationRequired(['registrar'])(loggedInUser) || response.render(views.ERROR_PAGE, {
+                message: 'You are not allowed here!',
+                currentUser: userData
+            });
 
-        response.render(views.VIEW_PROFILE, {
-            currentUser: loggedInUser,
-            candidate: userData
-        });
+            response.render(views.VIEW_PROFILE, {
+                currentUser: loggedInUser,
+                candidate: userData
+            });
+
+        } catch (error) {
+            console.log(error);
+        }
     },
 
     async approveRequest (request, response) {
@@ -247,10 +252,10 @@ module.exports = {
  * 
  */
 const authorizationRequired = allowedRoles => userData => {
-    console.log('Auth function:',allowedRoles, userData);
+    console.log('Auth function:', allowedRoles, userData);
     if (allowedRoles.includes('public')) {
         return true;
-    } else if(userData) {
+    } else if (userData) {
         const userRoleAllowed = allowedRoles.includes(userData.role);
         return userData.role === 'admin' || userRoleAllowed;
     }
