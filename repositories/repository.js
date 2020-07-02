@@ -29,9 +29,9 @@ module.exports = {
 
     findAll: (data) => async (collection) => {
         try {
-            const result = await db[collection].find({
+            const result = await db[collection].find(
                 data
-            }).toArray();
+            ).toArray();
             console.log('Collection:', collection, 'data:', data, result);
             return result;
         } catch (error) {
