@@ -33,6 +33,6 @@ module.exports = (app) => {
     app.get('/memberdashboard', controllers.renderMemberInfoPage(views.MEMBER_DASHBOARD_PAGE)(PERMISSIONS.MEMBERS_ONLY));
     app.get('/registrardashboard', controllers.renderRegistrarDashboard);
     app.get('/view/:userid', controllers.renderViewPage);
-    app.put('/approve/:userid', controllers.approveRequest);
-    app.put('/deny/:userid', controllers.approveRequest);
+    app.patch('/approve/:userid', controllers.approveRequest);
+    app.patch('/deny/:userid', controllers.approveRequest);
 };

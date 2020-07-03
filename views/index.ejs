@@ -8,11 +8,35 @@
 
 <body>
     <%- include('./partials/header', { currentUser }) %>
-    <div class="container align-middle" style="height: 700vh;">
-        <div class="row ">
-            <h1 class="text-center col ">Asia Pacific Certification Board</h1>
+    <div class="container align-middle">
+        <div class="row">
+            <img src="/images/APCB logo 2012.png" alt="" class="col">
+        </div>
+        <div class="row">
+            <div class="card col-sm-4">
+                <div class="card-body">
+                    <h5 class="card-title">Addictions Recovery Coach</h5>
+                    <p class="card-text">Helping your peers recover</p>
+                    <a href="/register" class="btn btn-primary">Apply Now</a>
+                </div>
+            </div>
+            <div class="card col-sm-4">
+                <div class="card-body">
+                    <h5 class="card-title">Certified Addictions Therapist</h5>
+                    <p class="card-text">A full-fledged therapist with a specialty in addictions.</p>
+                    <a href="/register" class="btn btn-primary">Apply Now</a>
+                </div>
+            </div>
+            <div class="card col-sm-4">
+                <div class="card-body">
+                    <h5 class="card-title">Certified Master Addictions Therapist</h5>
+                    <p class="card-text">A Master of the field of Addictions Therapy</p>
+                    <a href="/register" class="btn btn-primary">Apply Now</a>
+                </div>
+            </div>
         </div>
     </div>
+    
     <%- include('./partials/footer') %>
 </body>
 
