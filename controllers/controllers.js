@@ -30,7 +30,7 @@ module.exports = {
             const userData = await repositories.findOne({
                 _id: new ObjectID(sessionUser)
             })('users');
-            console.log('renderPage session data:', sessionUser, 'page ID');
+            console.log('renderPage session data:', sessionUser, 'page:', page);
             console.log('userdata', userData);
 
             authorizationRequired(allowedRoles)(userData) || response.render(views.ERROR_PAGE, {
@@ -252,7 +252,6 @@ module.exports = {
  * 
  */
 const authorizationRequired = allowedRoles => userData => {
-    console.log('Auth function:', allowedRoles, userData);
     if (allowedRoles.includes('public')) {
         return true;
     } else if (userData) {
